@@ -24,6 +24,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _obscurePassword = true;
+  final _formKey = GlobalKey<FormState>();
 
   final AuthService _authService = AuthService();
   late AuthenticationProvider _authProvider;
@@ -34,8 +35,25 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-
     _authProvider = Provider.of<AuthenticationProvider>(context, listen: false);
+  }
+
+  Future<void> _handleLogin() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      UserDataModel userDataModel = UserDataModel(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      User? user = await _authService.signInWithEmailAndPassword(userDataModel);
+      _authProvider.setCredential(user);
+      if (user != null) {
+        if (LocalPreferences.instance.getIsLoggedIn() == '1') {
+          Navigator.pushNamed(context, Routes.landing);
+        } else {
+          Navigator.pushNamed(context, Routes.setupProfileImage);
+        }
+      }
+    }
   }
 
   @override
@@ -45,58 +63,58 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 60),
-              Center(
-                child: Column(
-                  children: [
-                    Text(
-                      AppStrings.welcome,
-                      style: AppStyling.w600size32,
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      AppStrings.welcomeToYourPortal,
-                      style: AppStyling.w400size14.copyWith(color: Color(AppColors.fontGrey)),
-                    ),
-                  ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 60),
+                Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        AppStrings.welcome,
+                        style: AppStyling.w600size32,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        AppStrings.welcomeToYourPortal,
+                        style: AppStyling.w400size14.copyWith(color: Color(AppColors.fontGrey)),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 40),
-              EmailInputWidget(hintText: AppStrings.emailHint, labelText: AppStrings.email, controller: _emailController),
-              const SizedBox(height: 24),
-              PasswordInputWidget(hintText: AppStrings.passwordHint, labelText: AppStrings.password, controller: _passwordController),
-              const SizedBox(height: 12),
-              const ResetPasswordWidget(),
-              const Spacer(),
-              ActionButtonWidget(
-                onPressed: () async {
-                  UserDataModel userDataModel = UserDataModel(email: _emailController.text, password: _passwordController.text);
-                  User? user = await _authService.signInWithEmailAndPassword(userDataModel);
-                  _authProvider.setCredential(user);
-                  if (user != null) {
-                    if (LocalPreferences.instance.getIsLoggedIn() == '1') {
-                      Navigator.pushNamed(context, Routes.landing);
-                    } else {
-                      Navigator.pushNamed(context, Routes.setupProfileImage);
-                    }
-                  }
-                },
-                icon: 'assets/icons/svg/arrow_next.svg',
-                label: AppStrings.login,
-              ),
-              const SizedBox(height: 12),
-              ActionButtonWidget(
-                onPressed: () {
-                  Navigator.pushNamed(context, Routes.signUp);
-                },
-                icon: 'assets/icons/svg/arrow_next.svg',
-                label: AppStrings.signUp,
-              ),
-              const SizedBox(height: 24),
-            ],
+                const SizedBox(height: 40),
+                EmailInputWidget(
+                  hintText: AppStrings.emailHint,
+                  labelText: AppStrings.email,
+                  controller: _emailController,
+                ),
+                const SizedBox(height: 24),
+                PasswordInputWidget(
+                  hintText: AppStrings.passwordHint,
+                  labelText: AppStrings.password,
+                  controller: _passwordController,
+                ),
+                const SizedBox(height: 12),
+                const ResetPasswordWidget(),
+                const Spacer(),
+                ActionButtonWidget(
+                  onPressed: _handleLogin,
+                  icon: 'assets/icons/svg/arrow_next.svg',
+                  label: AppStrings.login,
+                ),
+                const SizedBox(height: 12),
+                ActionButtonWidget(
+                  onPressed: () {
+                    Navigator.pushNamed(context, Routes.signUp);
+                  },
+                  icon: 'assets/icons/svg/arrow_next.svg',
+                  label: AppStrings.signUp,
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),
