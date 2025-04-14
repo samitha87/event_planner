@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class PasswordInputWidget extends StatefulWidget {
   final String hintText;
   final String labelText;
+  final TextEditingController controller;
 
-  const PasswordInputWidget({super.key, required this.hintText, required this.labelText});
+  const PasswordInputWidget({super.key, required this.hintText, required this.labelText, required this.controller});
 
   @override
   State<PasswordInputWidget> createState() => _PasswordInputWidgetState();
@@ -28,6 +29,7 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
         Text(widget.labelText, style: AppStyling.w500size13),
         const SizedBox(height: 8),
         TextField(
+          controller: widget.controller,
           obscureText: _obscurePassword,
           decoration: inputDecoration.copyWith(
             prefixIcon: const Icon(Icons.lock_outline),

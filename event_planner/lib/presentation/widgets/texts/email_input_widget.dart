@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class EmailInputWidget extends StatefulWidget {
   final String hintText;
   final String labelText;
+  final TextEditingController controller;
 
-  const EmailInputWidget({super.key, required this.hintText, required this.labelText});
+  const EmailInputWidget({super.key, required this.hintText, required this.labelText, required this.controller});
 
   @override
   State<EmailInputWidget> createState() => _EmailInputWidgetState();
@@ -26,6 +27,7 @@ class _EmailInputWidgetState extends State<EmailInputWidget> {
         Text(widget.labelText, style: AppStyling.w500size13),
         const SizedBox(height: 8),
         TextField(
+          controller: widget.controller,
           decoration: inputDecoration.copyWith(
             prefixIcon: const Icon(Icons.email_outlined),
             hintText: widget.hintText,

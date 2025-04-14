@@ -1,16 +1,18 @@
+import 'package:event_planner/data/models/image_model.dart';
 import 'package:flutter/material.dart';
 
 class HomeCarouselWidget extends StatelessWidget {
-  const HomeCarouselWidget({super.key});
+  final List<ImageModel>? images;
+  const HomeCarouselWidget({super.key, required this.images});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: PageView.builder(
-        itemCount: 3,
+        itemCount: images?.length ?? 0,
         itemBuilder: (context, index) {
           return Container(
-            child: Image.network('https://cdn.pixabay.com/photo/2017/12/08/11/53/event-party-3005668_1280.jpg', fit: BoxFit.cover),
+            child: Image.network(images?[index].url ?? '', fit: BoxFit.cover),
           );
         },
       ),

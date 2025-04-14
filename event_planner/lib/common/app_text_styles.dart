@@ -11,7 +11,9 @@ class AppStyling {
   static TextStyle w600size26 = TextStyle(fontWeight: FontWeight.w600, fontSize: 26.sp, color: Color(AppColors.fontBlack));
   static TextStyle w600size22 = TextStyle(fontWeight: FontWeight.w600, fontSize: 22.sp, color: Color(AppColors.fontBlack));
   static TextStyle w600size19 = TextStyle(fontWeight: FontWeight.w600, fontSize: 19.sp, color: Color(AppColors.fontBlack));
+  static TextStyle w600size17 = TextStyle(fontWeight: FontWeight.w600, fontSize: 17.sp, color: Color(AppColors.fontBlack));
   static TextStyle w600size14 = TextStyle(fontWeight: FontWeight.w600, fontSize: 14.sp, color: Color(AppColors.fontWhite));
+
   static TextStyle w500size13 = TextStyle(fontWeight: FontWeight.w500, fontSize: 13.sp, color: Color(AppColors.fontBlack));
 
   static TextStyle w400size14 = TextStyle(fontWeight: FontWeight.w400, fontSize: 14.sp, color: Color(AppColors.fontBlack));

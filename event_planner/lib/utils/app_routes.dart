@@ -1,3 +1,4 @@
+import 'package:event_planner/presentation/screens/edit_profile_page.dart';
 import 'package:event_planner/presentation/screens/landing_page.dart';
 import 'package:event_planner/presentation/screens/launch_page.dart';
 import 'package:event_planner/presentation/screens/login_page.dart';
@@ -13,6 +14,7 @@ class Routes {
   static const String setupProfileImage = '/setupProfileImage';
   static const String personalInfo = '/personalInfo';
   static const String landing = '/landing';
+  static const String editProfile = '/editProfile';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -33,6 +35,9 @@ class Routes {
 
       case landing:
         return MaterialPageRoute(builder: (context) => const LandingPage());
+
+      case editProfile:
+        return MaterialPageRoute(builder: (context) => const EditProfilePage());
 
       default:
         return MaterialPageRoute(

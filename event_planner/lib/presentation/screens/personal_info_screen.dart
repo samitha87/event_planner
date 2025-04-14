@@ -1,6 +1,8 @@
 import 'package:event_planner/common/app_colors.dart';
 import 'package:event_planner/common/app_strings.dart';
 import 'package:event_planner/common/app_text_styles.dart';
+import 'package:event_planner/data/models/user_data_model.dart';
+import 'package:event_planner/domain/services/user_service.dart';
 import 'package:event_planner/presentation/widgets/buttons/action_button_widget.dart';
 import 'package:event_planner/presentation/widgets/buttons/secondory_action_button_widget.dart';
 import 'package:event_planner/presentation/widgets/texts/form_input_widget.dart';
@@ -95,6 +97,16 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                       icon: 'assets/icons/svg/arrow_next.svg',
                       label: AppStrings.next,
                       onPressed: () {
+                        UserDataModel userData = UserDataModel(
+                          fname: _firstNameController.text,
+                          lname: _lastNameController.text,
+                          email: _emailController.text,
+                          phone: _phoneController.text,
+                          address: _addressController.text,
+                        );
+
+                        UserService().updateUserInfo(userData, context);
+
                         Navigator.pushNamed(context, Routes.landing);
                       },
                     )),

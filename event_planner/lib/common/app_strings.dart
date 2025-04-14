@@ -29,4 +29,10 @@ class AppStrings {
   static const String eventName = 'Event Name';
   static const String eventDescription = '56 O\'Mally Road, ST LEONARDS, 2065, NSW';
   static const String eventOrganizer = 'Organizers';
+  static const String photoGallery = 'Photos';
+  static const String allPhotos = 'All Photos';
+
+  static const String posts = 'Posts';
+  static const String viewAll = 'View All';
+  static const String edit = 'Edit';
 }

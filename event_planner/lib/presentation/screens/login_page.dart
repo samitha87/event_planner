@@ -1,12 +1,19 @@
 import 'package:event_planner/common/app_colors.dart';
 import 'package:event_planner/common/app_strings.dart';
 import 'package:event_planner/common/app_text_styles.dart';
+import 'package:event_planner/core/local_preferences.dart';
+import 'package:event_planner/data/models/user_data_model.dart';
+import 'package:event_planner/domain/services/auth_service.dart';
+import 'package:event_planner/domain/services/push_notification_service.dart';
+import 'package:event_planner/presentation/state/auth_provider.dart';
 import 'package:event_planner/presentation/widgets/buttons/action_button_widget.dart';
 import 'package:event_planner/presentation/widgets/hyperlinks/reset_password_widget.dart';
 import 'package:event_planner/presentation/widgets/texts/email_input_widget.dart';
 import 'package:event_planner/presentation/widgets/texts/password_input_widget.dart';
 import 'package:event_planner/utils/app_routes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,6 +24,19 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _obscurePassword = true;
+
+  final AuthService _authService = AuthService();
+  late AuthenticationProvider _authProvider;
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _authProvider = Provider.of<AuthenticationProvider>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,15 +65,24 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 40),
-              const EmailInputWidget(hintText: AppStrings.emailHint, labelText: AppStrings.email),
+              EmailInputWidget(hintText: AppStrings.emailHint, labelText: AppStrings.email, controller: _emailController),
               const SizedBox(height: 24),
-              const PasswordInputWidget(hintText: AppStrings.passwordHint, labelText: AppStrings.password),
+              PasswordInputWidget(hintText: AppStrings.passwordHint, labelText: AppStrings.password, controller: _passwordController),
               const SizedBox(height: 12),
               const ResetPasswordWidget(),
               const Spacer(),
               ActionButtonWidget(
-                onPressed: () {
-                  Navigator.pushNamed(context, Routes.setupProfileImage);
+                onPressed: () async {
+                  UserDataModel userDataModel = UserDataModel(email: _emailController.text, password: _passwordController.text);
+                  User? user = await _authService.signInWithEmailAndPassword(userDataModel);
+                  _authProvider.setCredential(user);
+                  if (user != null) {
+                    if (LocalPreferences.instance.getIsLoggedIn() == '1') {
+                      Navigator.pushNamed(context, Routes.landing);
+                    } else {
+                      Navigator.pushNamed(context, Routes.setupProfileImage);
+                    }
+                  }
                 },
                 icon: 'assets/icons/svg/arrow_next.svg',
                 label: AppStrings.login,

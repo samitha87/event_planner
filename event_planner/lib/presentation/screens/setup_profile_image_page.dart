@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:event_planner/common/app_colors.dart';
 import 'package:event_planner/common/app_strings.dart';
 import 'package:event_planner/common/app_text_styles.dart';
+import 'package:event_planner/core/local_preferences.dart';
+import 'package:event_planner/domain/services/user_service.dart';
 import 'package:event_planner/presentation/widgets/buttons/action_button_widget.dart';
 import 'package:event_planner/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SetupProfileImagePage extends StatefulWidget {
   const SetupProfileImagePage({super.key});
@@ -42,7 +47,22 @@ class _SetupProfileImagePageState extends State<SetupProfileImagePage> {
                       ),
                       SizedBox(height: 32.sp),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () async {
+                          try {
+                            final profileImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+                            if (profileImage != null) {
+                              final url = await UserService().uploadProfileImage(File(profileImage.path), context);
+
+                              if (url != null) {
+                                // print(url);
+                                LocalPreferences.instance.setIsLoggedIn('1');
+                                Navigator.pushNamed(context, Routes.personalInfo);
+                              }
+                            }
+                          } catch (e) {
+                            print(e);
+                          }
+                        },
                         child: Container(
                           width: 100.sp,
                           height: 100.sp,

@@ -5,11 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ActionButtonWidget extends StatefulWidget {
-  const ActionButtonWidget({super.key, required this.onPressed, required this.icon, required this.label});
-
-  final VoidCallback onPressed;
-  final String icon;
+  final String? icon;
   final String label;
+  final VoidCallback onPressed;
+
+  const ActionButtonWidget({super.key, required this.onPressed, this.icon, required this.label});
 
   @override
   State<ActionButtonWidget> createState() => _ActionButtonWidgetState();
@@ -35,12 +35,13 @@ class _ActionButtonWidgetState extends State<ActionButtonWidget> {
               style: AppStyling.w600size14,
             ),
             SizedBox(width: 8.sp),
-            SvgPicture.asset(
-              widget.icon,
-              width: 20.sp,
-              height: 20.sp,
-              color: Color(AppColors.fontWhite),
-            ),
+            if (widget.icon != null)
+              SvgPicture.asset(
+                widget.icon!,
+                width: 20.sp,
+                height: 20.sp,
+                color: Color(AppColors.fontWhite),
+              ),
           ],
         ),
       ),
