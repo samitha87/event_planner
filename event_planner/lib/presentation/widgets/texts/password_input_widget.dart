@@ -5,45 +5,65 @@ class PasswordInputWidget extends StatefulWidget {
   final String hintText;
   final String labelText;
   final TextEditingController controller;
+  final String? Function(String?)? validator;
 
-  const PasswordInputWidget({super.key, required this.hintText, required this.labelText, required this.controller});
+  const PasswordInputWidget({
+    super.key,
+    required this.hintText,
+    required this.labelText,
+    required this.controller,
+    this.validator,
+  });
 
   @override
   State<PasswordInputWidget> createState() => _PasswordInputWidgetState();
 }
 
 class _PasswordInputWidgetState extends State<PasswordInputWidget> {
-  bool _obscurePassword = true;
+  bool _obscureText = true;
 
-  final inputDecoration = InputDecoration(
-    filled: true,
-    fillColor: const Color(0xFFFDF5F2),
-    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
-  );
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    }
+    if (value.length < 3) {
+      return 'Password must be at least 3 characters long';
+    }
+    if (!value.contains(RegExp(r'[A-Z]'))) {
+      return 'Password must contain at least one capital letter';
+    }
+    if (!value.contains(RegExp(r'[a-z]'))) {
+      return 'Password must contain at least one lowercase letter';
+    }
+    if (!value.contains(RegExp(r'[0-9]'))) {
+      return 'Password must contain at least one number';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(widget.labelText, style: AppStyling.w500size13),
-        const SizedBox(height: 8),
-        TextField(
-          controller: widget.controller,
-          obscureText: _obscurePassword,
-          decoration: inputDecoration.copyWith(
-            prefixIcon: const Icon(Icons.lock_outline),
-            suffixIcon: IconButton(
-              icon: Icon(_obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
-              onPressed: () {
-                setState(() {
-                  _obscurePassword = !_obscurePassword;
-                });
-              },
-            ),
+    return TextFormField(
+      controller: widget.controller,
+      obscureText: _obscureText,
+      validator: widget.validator ?? _validatePassword,
+      decoration: InputDecoration(
+        hintText: widget.hintText,
+        labelText: widget.labelText,
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscureText ? Icons.visibility_off : Icons.visibility,
           ),
+          onPressed: () {
+            setState(() {
+              _obscureText = !_obscureText;
+            });
+          },
         ),
-      ],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
     );
   }
 }
