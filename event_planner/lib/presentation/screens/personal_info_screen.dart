@@ -26,6 +26,21 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
 
+  void _handleSubmit() {
+    if (_formKey.currentState?.validate() ?? false) {
+      UserDataModel userData = UserDataModel(
+        fname: _firstNameController.text,
+        lname: _lastNameController.text,
+        email: _emailController.text,
+        phone: _phoneController.text,
+        address: _addressController.text,
+      );
+
+      UserService().updateUserInfo(userData, context);
+      Navigator.pushNamed(context, Routes.landing);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,32 +99,22 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 Row(
                   children: [
                     Expanded(
-                        child: SecondaryActionButtonWidget(
-                      icon: 'assets/icons/svg/arrow_back.svg',
-                      label: AppStrings.back,
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    )),
+                      child: SecondaryActionButtonWidget(
+                        icon: 'assets/icons/svg/arrow_back.svg',
+                        label: AppStrings.back,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
                     SizedBox(width: 16.sp),
                     Expanded(
-                        child: ActionButtonWidget(
-                      icon: 'assets/icons/svg/arrow_next.svg',
-                      label: AppStrings.next,
-                      onPressed: () {
-                        UserDataModel userData = UserDataModel(
-                          fname: _firstNameController.text,
-                          lname: _lastNameController.text,
-                          email: _emailController.text,
-                          phone: _phoneController.text,
-                          address: _addressController.text,
-                        );
-
-                        UserService().updateUserInfo(userData, context);
-
-                        Navigator.pushNamed(context, Routes.landing);
-                      },
-                    )),
+                      child: ActionButtonWidget(
+                        icon: 'assets/icons/svg/arrow_next.svg',
+                        label: AppStrings.next,
+                        onPressed: _handleSubmit,
+                      ),
+                    ),
                   ],
                 )
               ],
